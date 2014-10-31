@@ -20,15 +20,11 @@ module Cassandro
   def self.connect(options = {})
     keyspace = options.delete(:keyspace)
     @@cluster = Cassandra.connect(options)
-    @@session = @@cluster.connect(keyspace) if keyspace
+    @@session = @@cluster.connect(keyspace || nil)
   end
 
   def self.use(keyspace)
-    if @@session
-      @@session.execute("USE #{keyspace}")
-    else
-      @@session = @@cluster.connect(keyspace)
-    end
+    @@session.execute("USE #{keyspace}") if @session
   end
 
   def self.disconnect
