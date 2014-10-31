@@ -1,0 +1,10 @@
+task default: :test
+
+desc "Run tests"
+task :test do
+  load_files 'test/*_test.rb'
+end
+
+def load_files(dir)                                                                                            
+  Dir[dir].each { |file| load file }                                                                           
+end 
