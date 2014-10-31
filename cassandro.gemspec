@@ -3,9 +3,9 @@
 Gem::Specification.new do |s|
   s.name = "cassandro"
   s.version = "0.1.0"
-  s.summary = "Ruby ORM for Cassandra DB"
+  s.summary = "Ruby ORM for Apache Cassandra"
   s.license = "MIT"
-  s.description = "Lightweight Cassandra ORM for Ruby"
+  s.description = "Lightweight Apache Cassandra ORM for Ruby"
   s.authors = ["Lautaro Orazi", "Leonardo Mateo"]
   s.email = ["orazile@gmail.com", "leonardomateo@gmail.com"]
   s.homepage = "https://github.com/tarolandia/cassandro"
