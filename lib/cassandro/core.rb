@@ -19,7 +19,7 @@ module Cassandro
 
   def self.connect(options = {})
     keyspace = options.delete(:keyspace)
-    @@cluster = Cassandra.connect(options)
+    @@cluster = Cassandra.cluster(options)
     @@session = @@cluster.connect(keyspace || nil)
   end
 

@@ -3,7 +3,7 @@ require 'protest'
 
 require_relative '../lib/cassandro'
 
-CASSANDRA = Cassandra.connect(hosts: ['127.0.0.1'])
+CASSANDRA = Cassandra.cluster(hosts: ['127.0.0.1'])
 SESSION = CASSANDRA.connect
 
 keyspace_definition = <<-KSDEF
