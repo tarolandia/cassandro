@@ -181,7 +181,7 @@ module Cassandro
       rows = Cassandro.execute(query)
       all = []
       rows.each do |row|
-        all << new(row)
+        all << new(row, true)
       end
       all
     end
@@ -196,7 +196,7 @@ module Cassandro
       rows = Cassandro.client.execute(st, value)
 
       rows.each do |result|
-        results << new(result)
+        results << new(result, true)
       end
 
       results
