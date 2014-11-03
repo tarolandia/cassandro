@@ -32,13 +32,12 @@ Cassandro.use('keyspace_name')
 Create table.
 ```ruby
 table = <<-TABLEDEF                                                              
-  CREATE TABLE IF NOT EXISTS table_name (                                              
-    id UUID,                                                                       
-    username VARCHAR,                                                                 
-    crypted_password VARCHAR,                                                      
+  CREATE TABLE IF NOT EXISTS users (                                              
+    email VARCHAR,                                                                       
+    first_name VARCHAR,                                                                 
+    age INT,
     created_at TIMESTAMP,                                                          
-    updated_at TIMESTAMP,                                                          
-    PRIMARY KEY(id,username)                                                          
+    PRIMARY KEY(email,created_at)                                                          
   )                                                                                
 TABLEDEF
 
@@ -62,26 +61,28 @@ result = Cassandro.client.execute(statement, id)
 Creating new model: make you class inherits form `Cassandro::Model`
 
 ```ruby
-class SomeModel < Cassandro::Model
+class User < Cassandro::Model
 end
 ```
 
 Specifying table name using the method `table(table_name)`:
 
 ```ruby
-class SomeModel < Cassandro::Model
+class User < Cassandro::Model
 
-  table 'some_models'
+  table 'users'
 end
 ```
 
 Adding attributes using the method `attribute(name, type, options)`:
 
 ```ruby
-class SomeModel < Cassandro::Model
+class User < Cassandro::Model
 
-  attribute :id, :uuid
-  attribute :name, :text
+  attribute :email, :text
+  attribute :first_name, :text
+  attribute :age, :integer
+  attribute :created_at, :datetime
 end
 ```
 
@@ -90,47 +91,38 @@ types: :uuid, :text, :integer, :float, :timestamp, :datetime
 Setting the primary key using the method `primary_key(pk_name | Array)`:
 
 ```ruby
-class SomeModel < Cassandro::Model
+class User < Cassandro::Model
 
-  attribute :id, :uuid
-  attribute :name, :text
-  
-  primary_key :id
+  primary_key [:email, :created_at]
 
 end
 
-class SomeModel < Cassandro::Model
-
-  attribute :id, :uuid
-  attribute :name, :text
-  
-  primary_key [:id,:name]
-
-end
 ```
 
 Setting unique field using the method `unique(field | Array)`:
 
 ```ruby
-class SomeModel < Cassandro::Model
+class  User < Cassandro::Model
 
-  unique :name
+  unique :email
 end
 ```
 
 __A complete example__
 
 ```ruby
-class SomeModel < Cassandro::Model
+class User < Cassandro::Model
 
-  table 'some_models'
+  table 'users'
 
-  attribute :id, :uuid
-  attribute :name, :text
+  attribute :email, :text
+  attribute :first_name, :text
+  attribute :age, :integer
+  attribute :created_at, :datetime
   
-  primary_key [:id, :name]
+  primary_key [:email, :created_at]
 
-  unique :name
+  unique :email
 end
 ```
 
@@ -139,37 +131,96 @@ end
 Creating a new row:
 
 ```ruby
-somemodel = SomeModel.create(name: 'DaModel')
-=> #<SomeModel:0x00000001e7a0a8
- @attributes={:name=>"DaModel", :id=>"1534214c-0e0b-455c-95e8-13677f56d6e5"},
+user = User.create(email: 'test1@example.com', first_name: 'Test', age: 30, created_at: DateTime.now)
+=> #<User:0x00000001b9dc40
+ @attributes=
+  {:email=>"test1@example.com",
+   :first_name=>"Test",
+   :age=>30,
+   :created_at=>
+    #<DateTime: 2014-11-03T11:34:47-03:00 ((2456965j,52487s,201385585n),-10800s,2299161j)>},
+ @errors={},
+ @insert_statement=
+  #<Cassandra::Statements::Prepared:0xdcd4f8 @cql="          INSERT INTO users(email,first_name,age,created_at)\n          VALUES(?,?,?,?)\n          IF NOT EXISTS\n">,
+ @persisted=true>
+
+```
+
+Find:
+
+```ruby
+User[email: 'test1@example.com']
+=> #<User:0x00000001cc59d8
+ @attributes=
+  {:email=>"test1@example.com",
+   :created_at=>2014-11-03 11:34:47 -0300,
+   :age=>30,
+   :first_name=>"Test"},
+ @errors={},
+ @persisted=true>
+
+User.where('email','test1@example.com')
+=> #<User:0x00000001cc59d8
+ @attributes=
+  {:email=>"test1@example.com",
+   :created_at=>2014-11-03 11:34:47 -0300,
+   :age=>30,
+   :first_name=>"Test"},
  @errors={},
  @persisted=true>
 
 ```
 
-Find row:
+```ruby
+User.all
+=> [#<User:0x00000002bc75f8
+  @attributes=
+   {:email=>"test@example.com",
+    :created_at=>2014-11-03 11:30:52 -0300,
+    :age=>30,
+    :first_name=>"Test"},
+  @errors={},
+  @persisted=true>,
+ #<User:0x00000002bc6b30
+  @attributes=
+   {:email=>"test1@example.com",
+    :created_at=>2014-11-03 11:34:47 -0300,
+    :age=>30,
+    :first_name=>"Test"},
+  @errors={},
+  @persisted=true>]
+```
 
 ```ruby
-SomeModel[name: 'DaModel']
-=> #<SomeModel:0x00000001d27930
- @attributes={:id=>1534214c-0e0b-455c-95e8-13677f56d6e5, :name=>"DaModel"},
- @errors={},
- @persisted=true>
+User.query('created_at > ?', Time.now.to_i)
+=> #<Cassandra::Result:0x1fcb254 @rows=[{"email"=>"test@example.com", "created_at"=>2014-11-03 11:30:52 -0300, "age"=>30, "first_name"=>"Test"}, {"email"=>"test1@example.com", "created_at"=>2014-11-03 11:34:47 -0300, "age"=>30, "first_name"=>"Test"}] @last_page=true>
+```
+
+Count:
+
+```ruby
+User.count('email', 'test@example.com')
+=> 1
 ```
 
 Checking errors:
 ```ruby
-somemodel = SomeModel.create(name: 'DaModel')
-=> #<SomeModel:0x00000001d68160
- @attributes={:name=>"DaModel", :id=>"a723301b-b94b-4a4b-8d36-872055734ab5"},
- @errors={:unique=>"somemodel_not_unique"},
+user = User.create(email: 'test1@example.com', first_name: 'Test', age: 30, created_at: DateTime.now)
+=> #<User:0x00000001dc7a48
+ @attributes=
+  {:email=>"test1@example.com",
+   :first_name=>"Test",
+   :age=>30,
+   :created_at=>
+    #<DateTime: 2014-11-03T11:36:40-03:00 ((2456965j,52600s,972972939n),-10800s,2299161j)>},
+ @errors={:unique=>"user_not_unique"},
  @persisted=false>
 
-somemodel.persisted?
+user.persisted?
 => false
+user.errors
+=> {:unique=>"user_not_unique"}
 
-somemodel.errors
-=> {:unique=>"somemodel_not_unique"}
 ```
 
 ## TODO
