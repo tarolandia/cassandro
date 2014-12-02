@@ -14,4 +14,3 @@ class UserGenderMigration < Cassandro::Migration
     QUERY
   end
 end
-
