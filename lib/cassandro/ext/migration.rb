@@ -15,11 +15,15 @@ module Cassandro
     end
 
     def self.migrations
-      @@migrations.compact
+      @@migrations
     end
 
     def self.apply(direction = :up)
       new.send(direction)
+    end
+
+    def self.clean
+      @@migrations = []
     end
   end
 end

@@ -10,7 +10,7 @@ module Cassandro
 
       Cassandro.client.execute CassandroMigration.schema
 
-      version = CassandroMigration[name: 'version'] || CassandroMigration.create(name: 'version', value: 0)
+      version = CassandroMigration[name: 'version'] || CassandroMigration.create(name: 'version', value: "0")
 
       @current_version = version
     end
@@ -20,13 +20,13 @@ module Cassandro
 
       case direction
       when :up
-        to   = (to == '.' ? @migrations.size : to).to_i
+        to   = (to == '.' ? @migrations.size - 1 : to).to_i
         return @logger.error "Can't migrate up to a prev version (#{from} to #{to})" if to < from
         return @logger.info  "Database is up to date" if to == from
 
         @logger.info "Upgrading database from version #{from} to #{to}"
         begin
-          @migrations[from..to-1].each do |migration|
+          @migrations[from+1..to].each do |migration|
             Object.const_get(migration).apply(:up)
           end
           @current_version.update_attributes(value: to.to_s)
@@ -41,7 +41,7 @@ module Cassandro
 
         @logger.info "Drowngrading database from version #{from} to #{to}"
         begin
-          @migrations[to..from-1].reverse_each do |migration|
+          @migrations[to+1..from].reverse_each do |migration|
             Object.const_get(migration).apply(:down)
           end
           @current_version.update_attributes(value: to.to_s)
