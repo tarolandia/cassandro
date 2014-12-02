@@ -32,7 +32,7 @@ module Cassandro
           @current_version.update_attributes(value: to.to_s)
           @logger.info "OK"
         rescue => e
-          @logger.error e.message
+          @logger.error "#{e.message}\n#{e.backtrace}"
         end
       when :down
         to   = (to == '.' ? 0 : to).to_i
@@ -47,7 +47,7 @@ module Cassandro
           @current_version.update_attributes(value: to.to_s)
           @logger.info "OK"
         rescue => e
-          @logger.error e.message
+          @logger.error "#{e.message}\n#{e.backtrace}"
         end
       end
     end
