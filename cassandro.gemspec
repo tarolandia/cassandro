@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "cassandro"
-  s.version = "0.3.0"
+  s.version = "0.3.1"
   s.summary = "Ruby ORM for Apache Cassandra"
   s.license = "MIT"
   s.description = "Lightweight Apache Cassandra ORM for Ruby"
