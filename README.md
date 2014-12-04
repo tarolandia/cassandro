@@ -20,7 +20,18 @@ Cassandro.connect(
 Creating a new keyspace. For full details of keyspace creation visit [CLI keyspace](http://www.datastax.com/documentation/cassandra/2.0/cassandra/reference/referenceStorage_r.html)
 
 ```ruby
+# < 1.0.0
 Cassandro.create_keyspace('new_keyspace', 'SimpleStrategy', 1)
+
+# >= 1.0.0, allow more options
+Cassandro.create_keyspace('new_keyspace', {
+  replication: {
+    class: 'NetworkTopologyStrategy',
+    dc_1: 2,
+    dc_2: 2
+  },
+  durable_writes: true
+})
 ```
 
 Select keyspace outside `#connect`

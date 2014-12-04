@@ -36,14 +36,21 @@ module Cassandro
     @@session.execute(cql_command)
   end
 
-  def self.create_keyspace(name, strategy = 'SimpleStrategy', replication_factor = 1)
+  def self.create_keyspace(name, options = { replication: { class: 'SimpleStrategy', replication_factor: 1}} )
+    with = "WITH " + options.map do |key, option|
+      param_string = "#{key.to_s.upcase} = " +
+      if option.is_a?(Hash)
+        "{ #{option.map { |k,v| "'#{k}': #{v.is_a?(String) ? "'#{v}'": v.to_s}" }.join(", ")} }"
+      else
+        option.is_a?(String) ? "'#{option}'": option.to_s
+      end
+    end.join(" AND ")
+
     keyspace_definition = <<-KSDEF
       CREATE KEYSPACE IF NOT EXISTS #{name}
-      WITH replication = {
-        'class': '#{strategy}',
-        'replication_factor': #{replication_factor}
-      }
+      #{with}
     KSDEF
+
     @@session.execute(keyspace_definition)
   end
 
