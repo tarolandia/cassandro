@@ -15,6 +15,8 @@ module Cassandro
           send(:"#{att}=", val.to_a)
         when "Cassandra::Uuid"
           send(:"#{att}=", val.to_s)
+        when "Time"
+          send(:"#{att}=", DateTime.parse(val.to_s))
         else
           send(:"#{att}=", val)
         end
@@ -307,7 +309,7 @@ module Cassandro
         when :float
           n_attrs << attrs[k].to_f
         when :datetime
-          n_attrs << attrs[k].to_time.to_i
+          n_attrs << attrs[k].to_time
         else
           n_attrs << attrs[k]
         end
