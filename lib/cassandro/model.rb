@@ -16,7 +16,7 @@ module Cassandro
         when "Cassandra::Uuid"
           send(:"#{att}=", val.to_s)
         when "Time"
-          send(:"#{att}=", DateTime.parse(val.to_s))
+          send(:"#{att}=", val.to_datetime)
         else
           send(:"#{att}=", val)
         end
@@ -268,7 +268,7 @@ module Cassandro
       when :int, :integer
         value.to_i
       when :datetime
-        value.to_time.to_i * 1000
+        value.strftime("%Q").to_i
       else
         "#{value}"
       end
