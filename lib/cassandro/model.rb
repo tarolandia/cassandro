@@ -288,7 +288,7 @@ module Cassandro
           #{options[:insert_check] ? 'IF NOT EXISTS' : ''}
         QUERY
         if @insert_statement.nil? ||
-                      @insert_statement.metadata.count != @attributes.count
+                      @insert_statement.params_metadata.count != @attributes.count
           @insert_statement = Cassandro.client.prepare(query)
         else
           @insert_statement
