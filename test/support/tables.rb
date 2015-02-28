@@ -18,3 +18,13 @@ table = <<-TABLEDEF
   )
 TABLEDEF
 SESSION.execute(table)
+
+SESSION.execute("DROP TABLE IF EXISTS users")
+table = <<-TABLEDEF
+  CREATE TABLE IF NOT EXISTS users (
+    nickname VARCHAR,
+    deleted BOOLEAN,
+    PRIMARY KEY(nickname)
+  )
+TABLEDEF
+SESSION.execute(table)

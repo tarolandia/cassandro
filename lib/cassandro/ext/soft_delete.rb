@@ -1,7 +1,18 @@
 module Cassandro
   module SoftDelete
+    module ClassMethods
+      def all(with_deleted = false)
+        results = super()
+
+        results.reject!{ |r| r.deleted } unless with_deleted
+
+        results
+      end
+    end
+
     def self.included(model)
       model.attribute :deleted, :boolean
+      model.extend ClassMethods
     end
 
     def destroy
