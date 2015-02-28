@@ -5,38 +5,38 @@ Protest.describe "Cassandro Model Soft Delete" do
   setup do
     Cassandro.connect(hosts: ['127.0.0.1'], keyspace: 'cassandro_test')
 
-    class User < Cassandro::Model
+    class Admin < Cassandro::Model
       include Cassandro::SoftDelete
 
-      table :users
+      table :admins
       attribute :nickname, :text
 
       primary_key :nickname
     end
 
 
-    User.all(true).each do |u|
-      Cassandro.execute("DELETE FROM users WHERE nickname = '#{u.nickname}'")
+    Admin.all(true).each do |a|
+      Cassandro.execute("DELETE FROM admins WHERE nickname = '#{a.nickname}'")
     end
   end
 
   test "all not include deleted" do
 
-    me = User.create(:nickname => "k4nd4lf")
-    other = User.create(:nickname => "Jim")
+    me = Admin.create(:nickname => "k4nd4lf")
+    other = Admin.create(:nickname => "Jim")
 
     me.destroy
 
-    assert !User.all.include?(me)
+    assert !Admin.all.include?(me)
   end
 
   test "all should include deleted if asked" do
-    me = User.create(:nickname => "k4nd4lf")
-    other = User.create(:nickname => "Jim")
+    me = Admin.create(:nickname => "k4nd4lf")
+    other = Admin.create(:nickname => "Jim")
 
     me.destroy
 
-    assert !User.all.include?(me)
+    assert !Admin.all.include?(me)
 
   end
 end

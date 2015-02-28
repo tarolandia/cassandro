@@ -19,9 +19,9 @@ table = <<-TABLEDEF
 TABLEDEF
 SESSION.execute(table)
 
-SESSION.execute("DROP TABLE IF EXISTS users")
+SESSION.execute("DROP TABLE IF EXISTS admins")
 table = <<-TABLEDEF
-  CREATE TABLE IF NOT EXISTS users (
+  CREATE TABLE IF NOT EXISTS admins (
     nickname VARCHAR,
     deleted BOOLEAN,
     PRIMARY KEY(nickname)
