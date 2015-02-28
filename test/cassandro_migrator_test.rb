@@ -1,6 +1,7 @@
 require_relative 'helper'
 
 Protest.describe "Cassandro Migrator" do
+  Cassandro.connect(hosts: ['127.0.0.1'], keyspace: 'cassandro_test')
   setup do
     #Cassandro::Migration.cleaassandra::Errors::InvalidError
     Cassandro.client.execute("DROP TABLE IF EXISTS users")
