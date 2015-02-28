@@ -6,6 +6,8 @@ Protest.describe "Cassandro Migration" do
   end
 
   test "enqueue migrations" do
+    Cassandro::Migration.clean
+
     class FirstMigration < Cassandro::Migration
       version 1
     end
