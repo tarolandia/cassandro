@@ -301,6 +301,12 @@ module Cassandro
       attrs ||= @attributes
 
       attrs.each do |k, v|
+        # bypassed nil values to avoid type casting errors
+        if attrs[k].nil?
+          n_attrs << nil
+          next
+        end
+
         case self.class.casts[k]
         when :uuid
           n_attrs << Cassandra::Uuid.new(attrs[k])
