@@ -8,6 +8,17 @@ table = <<-TABLEDEF
 TABLEDEF
 SESSION.execute(table)
 
+SESSION.execute("DROP TABLE IF EXISTS tests_attributes")
+table = <<-TABLEDEF
+  CREATE TABLE IF NOT EXISTS tests_attributes (
+    test_col_1 UUID,
+    test_col_2 VARCHAR,
+    test_col_3 TIMESTAMP,
+    PRIMARY KEY(test_col_1)
+  )
+TABLEDEF
+SESSION.execute(table)
+
 SESSION.execute("DROP TABLE IF EXISTS patients")
 table = <<-TABLEDEF
   CREATE TABLE IF NOT EXISTS patients (
