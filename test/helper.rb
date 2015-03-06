@@ -21,4 +21,4 @@ class Protest::TestCase
   include Rack::Test::Methods
 end
 
-Protest.report_with(:turn)
+ENV["PROTEST_REPORT"] ||= "turn"

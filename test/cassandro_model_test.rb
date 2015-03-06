@@ -81,6 +81,30 @@ Protest.describe "Cassandro Model" do
     end
   end
 
+  context 'Saving' do
+    setup do
+      class TestAttributes < Cassandro::Model
+        table 'tests_attributes'
+
+        attribute :test_col_1, :uuid
+        attribute :test_col_2, :text
+        attribute :test_col_3, :datetime
+
+        primary_key :test_col_1
+        unique :test_col_1
+      end
+
+      Cassandro.truncate_table('tests_attributes')
+    end
+
+    test "save a row with nil values" do
+      test = TestAttributes.create(test_col_1: SecureRandom.uuid, test_col_2: 'test_value_2', test_col_3: DateTime.now)
+      test.test_col_3 = nil
+      assert test.save
+      assert test.persisted?
+    end
+  end
+
   context 'Querying' do
     setup do
       class Test < Cassandro::Model
