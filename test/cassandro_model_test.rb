@@ -138,6 +138,13 @@ Protest.describe "Cassandro Model" do
       test = Test[{}]
       assert_equal nil, test
     end
+
+    test "counts the rows" do
+      Test.create(test_col_1: SecureRandom.uuid, test_col_2: 'test_value_2')
+      Test.create(test_col_1: SecureRandom.uuid, test_col_2: 'test_value_2')
+
+      assert_equal Test.all.size, Test.count
+    end
   end
 
   context 'Updating' do

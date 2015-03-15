@@ -236,6 +236,14 @@ module Cassandro
       Cassandro.client.execute(st, *values)
     end
 
+    def self.count
+      query = "SELECT count(*) FROM #{self.table_name}"
+
+      count = Cassandro.execute(query)
+
+      count.first["count"]
+    end
+
     protected
     def self.attributes
       @attributes ||= []
