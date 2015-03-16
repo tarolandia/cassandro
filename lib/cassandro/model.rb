@@ -156,10 +156,10 @@ module Cassandro
 
       if value.is_a?(Hash)
         where = "#{value.keys.map{ |k| "#{k} = ?" }.join(' AND ')} ALLOW FILTERING"
-        values = value.map {|k,v| cast_as(k, v)}
+        values = value.values
       else
         where = "#{partition_key} = ?"
-        values = [cast_as(partition_key, value)]
+        values = [value]
       end
 
       query = <<-QUERY
