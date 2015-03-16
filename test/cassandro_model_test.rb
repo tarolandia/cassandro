@@ -45,7 +45,7 @@ Protest.describe "Cassandro Model" do
     end
 
     test "allows setting and getting attributes" do
-      uuid = Cassandra::Uuid.new(SecureRandom.uuid)
+      uuid = SecureRandom.uuid
       test = Test.new(test_col_1: uuid, test_col_2: 'test_value_2')
       assert_equal uuid.to_s, test.test_col_1
       assert_equal 'test_value_2', test.test_col_2
@@ -68,12 +68,12 @@ Protest.describe "Cassandro Model" do
     end
 
     test "creates a row" do
-      test = Test.create(test_col_1: Cassandra::Uuid.new(SecureRandom.uuid), test_col_2: 'test_value_2')
+      test = Test.create(test_col_1: SecureRandom.uuid, test_col_2: 'test_value_2')
       assert test.persisted?
     end
 
     test "fails creating dup row" do
-      uuid = Cassandra::Uuid.new(SecureRandom.uuid)
+      uuid = SecureRandom.uuid
       test_1 = Test.create(test_col_1: uuid, test_col_2: 'test_value_2')
       test_2 = Test.create(test_col_1: uuid, test_col_2: 'test_value_2')
       assert !test_2.persisted?
@@ -98,7 +98,7 @@ Protest.describe "Cassandro Model" do
     end
 
     test "save a row with nil values" do
-      test = TestAttributes.create(test_col_1: Cassandra::Uuid.new(SecureRandom.uuid), test_col_2: 'test_value_2', test_col_3: DateTime.now)
+      test = TestAttributes.create(test_col_1: SecureRandom.uuid, test_col_2: 'test_value_2', test_col_3: DateTime.now)
       test.test_col_3 = nil
       assert test.save
       assert test.persisted?
@@ -121,9 +121,9 @@ Protest.describe "Cassandro Model" do
     end
 
     test "gets row" do
-      uuid = Cassandra::Uuid.new(SecureRandom.uuid)
+      uuid = SecureRandom.uuid
       Test.create(test_col_1: uuid, test_col_2: 'test_value_2')
-      test = Test[uuid.to_s]
+      test = Test[uuid]
       assert_equal uuid.to_s, test.test_col_1.to_s
       assert_equal "test_value_2", test.test_col_2
     end

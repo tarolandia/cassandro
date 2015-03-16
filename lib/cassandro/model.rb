@@ -156,10 +156,10 @@ module Cassandro
 
       if value.is_a?(Hash)
         where = "#{value.keys.map{ |k| "#{k} = ?" }.join(' AND ')} ALLOW FILTERING"
-        values = value.values
+        values = value.map{ |k,v| casts[k] == :uuid ? Cassandra::Uuid.new(v) : v }
       else
         where = "#{partition_key} = ?"
-        values = [value]
+        values = [casts[partition_key] == :uuid ? Cassandra::Uuid.new(value) : value]
       end
 
       query = <<-QUERY
