@@ -127,6 +127,17 @@ Protest.describe "Cassandro Model" do
       assert_equal uuid, test.test_col_1.to_s
       assert_equal "test_value_2", test.test_col_2
     end
+
+    test "gets row with nil or empty values" do
+      test = Test[nil]
+      assert_equal nil, test
+
+      test = Test[""]
+      assert_equal nil, test
+
+      test = Test[{}]
+      assert_equal nil, test
+    end
   end
 
   context 'Updating' do
