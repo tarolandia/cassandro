@@ -152,10 +152,14 @@ module Cassandro
     end
 
     def self.[](value)
+      return nil if value.nil? || (value.respond_to?(:empty?) && value.empty?)
+
       if value.is_a?(Hash)
-        where = "#{value.map { |k,v| "#{k.to_s} = #{cast_as(k, v)}" }.join(' AND ')} ALLOW FILTERING"
+        where = "#{value.keys.map{ |k| "#{k} = ?" }.join(' AND ')} ALLOW FILTERING"
+        values = value.map{ |k,v| casts[k] == :uuid ? Cassandra::Uuid.new(v) : v }
       else
-        where = "#{partition_key} = #{cast_as(partition_key, value)}"
+        where = "#{partition_key} = ?"
+        values = [casts[partition_key] == :uuid ? Cassandra::Uuid.new(value) : value]
       end
 
       query = <<-QUERY
@@ -164,7 +168,9 @@ module Cassandro
         WHERE #{where}
       QUERY
 
-      result = Cassandro.execute(query)
+      st = Cassandro.client.prepare(query)
+      result = Cassandro.client.execute(st, *values)
+
       return nil unless result.any?
 
       self.new(result.first, true)

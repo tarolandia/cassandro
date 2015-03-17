@@ -47,7 +47,7 @@ Protest.describe "Cassandro Model" do
     test "allows setting and getting attributes" do
       uuid = SecureRandom.uuid
       test = Test.new(test_col_1: uuid, test_col_2: 'test_value_2')
-      assert_equal uuid, test.test_col_1
+      assert_equal uuid.to_s, test.test_col_1
       assert_equal 'test_value_2', test.test_col_2
     end
   end
@@ -124,8 +124,19 @@ Protest.describe "Cassandro Model" do
       uuid = SecureRandom.uuid
       Test.create(test_col_1: uuid, test_col_2: 'test_value_2')
       test = Test[uuid]
-      assert_equal uuid, test.test_col_1.to_s
+      assert_equal uuid.to_s, test.test_col_1.to_s
       assert_equal "test_value_2", test.test_col_2
+    end
+
+    test "gets row with nil or empty values" do
+      test = Test[nil]
+      assert_equal nil, test
+
+      test = Test[""]
+      assert_equal nil, test
+
+      test = Test[{}]
+      assert_equal nil, test
     end
   end
 
