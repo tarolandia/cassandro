@@ -145,6 +145,14 @@ Protest.describe "Cassandro Model" do
 
       assert_equal Test.all.size, Test.count
     end
+
+    test "counts the rows with filter" do
+      uuid = SecureRandom.uuid
+      Test.create(test_col_1: uuid, test_col_2: 'test_value_2')
+      Test.create(test_col_1: SecureRandom.uuid, test_col_2: 'test_value_2')
+
+      assert_equal 1, Test.count(:test_col_1, Cassandra::Uuid.new(uuid))
+    end
   end
 
   context 'Updating' do
