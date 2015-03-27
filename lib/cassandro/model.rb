@@ -173,6 +173,8 @@ module Cassandro
 
       return nil unless result.any?
 
+      result.first.each{ |k,v| result.first[k] = [] if casts[k.to_sym] == :set && v.nil? }
+
       self.new(result.first, true)
     end
 
