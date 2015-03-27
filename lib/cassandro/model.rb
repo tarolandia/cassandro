@@ -173,9 +173,7 @@ module Cassandro
 
       return nil unless result.any?
 
-      result.first.each{ |k,v| result.first[k] = [] if casts[k.to_sym] == :set && v.nil? }
-
-      self.new(result.first, true)
+      self.new(self.parse_row(result.first), true)
     end
 
     def self.create(attrs = {})
@@ -191,7 +189,7 @@ module Cassandro
       rows = Cassandro.execute(query)
       all = []
       rows.each do |row|
-        all << new(row, true)
+        all << new(self.parse_row(row), true)
       end
       all
     end
@@ -336,6 +334,10 @@ module Cassandro
         end
       end
       n_attrs
+    end
+
+    def self.parse_row(row)
+      row.each{ |k,v| row[k] = [] if casts[k.to_sym] == :set && v.nil? }
     end
   end
 end
