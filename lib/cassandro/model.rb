@@ -319,6 +319,8 @@ module Cassandro
         end
 
         case self.class.casts[k]
+        when :set
+          n_attrs << Set.new(attrs[k])
         when :uuid
           n_attrs << Cassandra::Uuid.new(attrs[k])
         when :integer
