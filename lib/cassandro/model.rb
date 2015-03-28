@@ -289,6 +289,24 @@ module Cassandro
       pk.first
     end
 
+    def self.options
+      @options ||= {}
+    end
+
+    def self.ttl(seconds)
+      self.options[:ttl] = seconds.to_i
+    end
+
+    def self.create_with_ttl(seconds, attrs = {})
+      old_ttl = self.options[:ttl]
+      self.options[:ttl] = seconds.to_i
+
+      result = self.create(attrs)
+
+      old_ttl ? self.options[:ttl] = old_ttl : self.options.delete(:ttl)
+      result
+    end
+
     def statement_for(operation, options = {})
       case operation
       when :insert
@@ -297,6 +315,7 @@ module Cassandro
           INSERT INTO #{self.class.table_name}(#{@attributes.keys.map { |x| x.to_s}.join(',')})
           VALUES(#{@attributes.keys.map { |x| '?' }.join(",")})
           #{options[:insert_check] ? 'IF NOT EXISTS' : ''}
+          #{self.class.options[:ttl] && self.class.options[:ttl] > 0 ? "USING TTL #{self.class.options[:ttl]}" : ''}
         QUERY
         if @insert_statement.nil? ||
                       @insert_statement.params_metadata.count != @attributes.count

@@ -184,4 +184,60 @@ Protest.describe "Cassandro Model" do
       assert_equal "PRIMARY KEY part name found in SET part", patient.errors[:update_error]
     end
   end
+
+  context 'TTL' do
+    setup do
+      class Test < Cassandro::Model
+        table 'tests'
+
+        ttl 20
+
+        attribute :test_col_1, :uuid
+        attribute :test_col_2, :text
+
+        primary_key :test_col_1
+        unique :test_col_1
+      end
+
+      class Animal < Cassandro::Model
+        table :animals
+
+        attribute :family, :text
+        attribute :genus, :text
+        attribute :name, :text
+
+        primary_key [:family, :genus]
+      end
+      Cassandro.truncate_table('animals')
+    end
+
+    test "should create with TTL defined by the model" do
+      volatile_record = Test.create(:test_col_1 => SecureRandom.uuid, :test_col_2 => "Test Text")
+      results = Cassandro.execute "SELECT TTL(test_col_2) FROM tests WHERE test_col_1 = #{volatile_record.test_col_1}"
+
+      assert results.first["ttl(test_col_2)"] > 0
+      assert results.first["ttl(test_col_2)"] <= 20
+    end
+
+    test "should override TTL defined by the model" do
+      volatile_record = Test.create_with_ttl(10, :test_col_1 => SecureRandom.uuid, :test_col_2 => "Test Text")
+      results = Cassandro.execute "SELECT TTL(test_col_2) FROM tests WHERE test_col_1 = #{volatile_record.test_col_1}"
+
+      assert results.first["ttl(test_col_2)"] > 0
+      assert results.first["ttl(test_col_2)"] <= 10
+    end
+
+    test "should be able to create with TTL if not specified in the model" do
+      dog = Animal.create(:family => "canidae", :genus => "canis", :name => "dog")
+      results = Cassandro.execute "SELECT TTL(name) FROM animals WHERE genus = 'canis' AND family = 'canidae'"
+
+      assert !results.first["ttl(name)"]
+
+      cat = Animal.create_with_ttl(30, :family => "felidae", :genus => "felis", :name => "cat")
+      results = Cassandro.execute "SELECT TTL(name) FROM animals WHERE genus = 'felis' AND family = 'felidae'"
+
+      assert results.first["ttl(name)"] > 0
+      assert results.first["ttl(name)"] <= 30
+    end
+  end
 end
