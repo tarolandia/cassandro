@@ -119,7 +119,8 @@ class  User < Cassandro::Model
 end
 ```
 
-Setting TTL to a model:
+
+### Setting TTL to a model
 
 ```Ruby
 class Person < Cassandro::Model
