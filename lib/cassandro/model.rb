@@ -70,7 +70,7 @@ module Cassandro
 
       begin
         st = Cassandro.client.prepare(query)
-        Cassandro.client.execute(st, *native_attributes(attrs))
+        Cassandro.client.execute(st, arguments: native_attributes(attrs))
         @attributes.merge!(attrs)
         true
       rescue Exception => e
@@ -101,7 +101,7 @@ module Cassandro
       st = self.statement_for(:insert, :insert_check => insert_check)
 
       begin
-        r = Cassandro.client.execute(st, *self.native_attributes)
+        r = Cassandro.client.execute(st, arguments: self.native_attributes)
         raise ModelException.new('not_applied') unless !insert_check || (insert_check && r.first["[applied]"])
         @persisted = true
       rescue => e
@@ -170,7 +170,7 @@ module Cassandro
       QUERY
 
       st = Cassandro.client.prepare(query)
-      result = Cassandro.client.execute(st, *values)
+      result = Cassandro.client.execute(st, arguments: values)
 
       return nil unless result.any?
 
@@ -202,7 +202,7 @@ module Cassandro
       query = "SELECT * FROM #{table_name} WHERE #{key} = ? ALLOW FILTERING"
 
       st = Cassandro.client.prepare(query)
-      rows = Cassandro.client.execute(st, value)
+      rows = Cassandro.client.execute(st, arguments: [value])
 
       rows.each do |result|
         results << new(result, true)
@@ -218,7 +218,7 @@ module Cassandro
         key = key.to_sym
         query << " WHERE #{key} = ? ALLOW FILTERING"
         st = Cassandro.client.prepare(query)
-        results = Cassandro.client.execute(st, value)
+        results = Cassandro.client.execute(st, arguments: [value])
       else
         results = Cassandro.client.execute(query)
       end
@@ -239,7 +239,7 @@ module Cassandro
     def self.query(where, *values)
       query = "SELECT * FROM #{table_name} WHERE #{where} ALLOW FILTERING"
       st = Cassandro.client.prepare(query)
-      Cassandro.client.execute(st, *values)
+      Cassandro.client.execute(st, arguments: [values])
     end
 
     protected

@@ -71,3 +71,12 @@ module Cassandro
     end
   end
 end
+
+# Patch: Make params_metadata public for Prepared Statements
+module Cassandra
+  module Statements
+    class Prepared
+      attr_reader :params_metadata
+    end
+  end
+end
