@@ -152,6 +152,14 @@ module Cassandro
       end
     end
 
+    def self.index(keys)
+      if keys.is_a?(Array)
+        indexes.push(*keys)
+      else
+        indexes << keys
+      end
+    end
+
     def self.[](value)
       return nil if value.nil? || (value.respond_to?(:empty?) && value.empty?)
 
@@ -182,6 +190,16 @@ module Cassandro
       model.save(true)
 
       model
+    end
+
+    def self.create_with_ttl(seconds, attrs = {})
+      old_ttl = self.options[:ttl]
+      self.options[:ttl] = seconds.to_i
+
+      result = self.create(attrs)
+
+      old_ttl ? self.options[:ttl] = old_ttl : self.options.delete(:ttl)
+      result
     end
 
     def self.all
@@ -267,6 +285,10 @@ module Cassandro
       @unique ||= []
     end
 
+    def self.indexes
+      @indexes ||= []
+    end
+
     def self.uniqueness_defined?
       uniques.any?
     end
@@ -296,16 +318,6 @@ module Cassandro
 
     def self.ttl(seconds)
       self.options[:ttl] = seconds.to_i
-    end
-
-    def self.create_with_ttl(seconds, attrs = {})
-      old_ttl = self.options[:ttl]
-      self.options[:ttl] = seconds.to_i
-
-      result = self.create(attrs)
-
-      old_ttl ? self.options[:ttl] = old_ttl : self.options.delete(:ttl)
-      result
     end
 
     def statement_for(operation, options = {})

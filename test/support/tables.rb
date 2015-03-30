@@ -4,6 +4,9 @@ table = <<-TABLEDEF
     test_col_1 UUID,
     test_col_2 VARCHAR,
     test_col_3 VARCHAR,
+    test_col_4 VARCHAR,
+    test_col_5 VARCHAR,
+    test_col_ignored VARCHAR,
     PRIMARY KEY(test_col_1)
   )
 TABLEDEF

@@ -44,6 +44,28 @@ Protest.describe "Cassandro Model" do
       assert Test.uniqueness_defined?
     end
 
+    test "adds index" do
+      class Test < Cassandro::Model
+        index :test_col_2
+      end
+
+      assert Test.indexes.include?(:test_col_2)
+    end
+
+    test "adds multiple indexes" do
+      class Test < Cassandro::Model
+        attribute :test_col_3, :text
+        attribute :test_col_4, :text
+        attribute :test_col_5, :text
+
+        index :test_col_3
+        index [:test_col_4, :test_col_5]
+      end
+      assert Test.indexes.include?(:test_col_3)
+      assert Test.indexes.include?(:test_col_4)
+      assert Test.indexes.include?(:test_col_5)
+    end
+
     test "allows setting and getting attributes" do
       uuid = SecureRandom.uuid
       test = Test.new(test_col_1: uuid, test_col_2: 'test_value_2')
@@ -159,7 +181,7 @@ Protest.describe "Cassandro Model" do
       Test.create(test_col_1: uuid, test_col_2: 'test_value_2')
 
       tests = Test[uuid]
-      assert_equal false, tests.respond_to?("test_col_3")
+      assert_equal false, tests.respond_to?("test_col_ignored")
     end
   end
 
