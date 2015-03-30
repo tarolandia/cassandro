@@ -10,6 +10,7 @@ module Cassandro
       @persisted = persisted
 
       attrs.each do |att, val|
+        next unless self.respond_to?(:"#{att}=")
         case val.class.name
         when "Set"
           send(:"#{att}=", val.to_a)
