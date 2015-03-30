@@ -3,6 +3,7 @@ table = <<-TABLEDEF
   CREATE TABLE IF NOT EXISTS tests (
     test_col_1 UUID,
     test_col_2 VARCHAR,
+    test_col_3 VARCHAR,
     PRIMARY KEY(test_col_1)
   )
 TABLEDEF

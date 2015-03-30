@@ -153,6 +153,14 @@ Protest.describe "Cassandro Model" do
 
       assert_equal 1, Test.count(:test_col_1, Cassandra::Uuid.new(uuid))
     end
+
+    test "ignore columns not defined in model" do
+      uuid = SecureRandom.uuid
+      Test.create(test_col_1: uuid, test_col_2: 'test_value_2')
+
+      tests = Test[uuid]
+      assert_equal false, tests.respond_to?("test_col_3")
+    end
   end
 
   context 'Updating' do
