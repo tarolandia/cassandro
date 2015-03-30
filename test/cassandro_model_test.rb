@@ -199,16 +199,16 @@ Protest.describe "Cassandro Model" do
         unique :test_col_1
       end
 
-      class Animal < Cassandro::Model
-        table :animals
+      class Patient < Cassandro::Model
+        table :patients
 
-        attribute :family, :text
-        attribute :genus, :text
         attribute :name, :text
+        attribute :address, :text
+        attribute :age, :int
 
-        primary_key [:family, :genus]
+        primary_key [:name]
       end
-      Cassandro.truncate_table('animals')
+      Cassandro.truncate_table('patients')
     end
 
     test "should create with TTL defined by the model" do
@@ -228,16 +228,16 @@ Protest.describe "Cassandro Model" do
     end
 
     test "should be able to create with TTL if not specified in the model" do
-      dog = Animal.create(:family => "canidae", :genus => "canis", :name => "dog")
-      results = Cassandro.execute "SELECT TTL(name) FROM animals WHERE genus = 'canis' AND family = 'canidae'"
+      dog = Patient.create(:name => "Cassandro", :address => "cassandstreet", :age => 1)
+      results = Cassandro.execute "SELECT TTL(address) FROM patients WHERE name = 'Cassandro'"
 
-      assert !results.first["ttl(name)"]
+      assert !results.first["ttl(address)"]
 
-      cat = Animal.create_with_ttl(30, :family => "felidae", :genus => "felis", :name => "cat")
-      results = Cassandro.execute "SELECT TTL(name) FROM animals WHERE genus = 'felis' AND family = 'felidae'"
+      cat = Patient.create_with_ttl(30, :name => "Cassandra", :address => "cassandstreet 123", :age => 2)
+      results = Cassandro.execute "SELECT TTL(address) FROM patients WHERE name = 'Cassandra'"
 
-      assert results.first["ttl(name)"] > 0
-      assert results.first["ttl(name)"] <= 30
+      assert results.first["ttl(address)"] > 0
+      assert results.first["ttl(address)"] <= 30
     end
   end
 end
