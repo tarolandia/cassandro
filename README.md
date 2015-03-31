@@ -1,6 +1,6 @@
 # Cassandro [![Gem Version](https://badge.fury.io/rb/cassandro.svg)](http://badge.fury.io/rb/cassandro)
 
-Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro uses the new Datastax Ruby Driver (official driver).
+Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro uses the new [Datastax Ruby Driver](https://github.com/datastax/ruby-driver)
 
 ## Install
  
@@ -17,9 +17,7 @@ Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro us
 
 ## TODO
 
-* Support Index
-* Better queries
-* Better documentation
+* Improve querying
 
 ## How to collaborate
 
