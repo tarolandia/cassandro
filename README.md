@@ -11,6 +11,10 @@ Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro us
 * Support `cassandra-driver` >= 2.0
 * Allow registering indexes in model's definition
 
+## Documentation
+
+* [Getting Started](docs/getting_started.md)
+
 ## TODO
 
 * Support Index
