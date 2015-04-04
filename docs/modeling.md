@@ -1,14 +1,18 @@
 ## Cassandro::Model
 
 ### Creating model
-Creating new model: make you class inherits form `Cassandro::Model`
+
+#### Creating new model
+
+Make you class inherits form `Cassandro::Model`
 
 ```ruby
 class User < Cassandro::Model
 end
 ```
+#### Table name
 
-Specifying table name using the method `table(table_name)`:
+Specify table name using the method `table(table_name)`:
 
 ```ruby
 class User < Cassandro::Model
@@ -17,7 +21,9 @@ class User < Cassandro::Model
 end
 ```
 
-Adding attributes using the method `attribute(name, type, options)`:
+#### Attributes
+
+Add attributes using the method `attribute(name, type, options)`:
 
 ```ruby
 class User < Cassandro::Model
@@ -29,9 +35,11 @@ class User < Cassandro::Model
 end
 ```
 
-types: :uuid, :text, :integer, :float, :timestamp, :datetime
+Types: `:uuid`, `:text`, `:integer`, `:float`, `:timestamp`, `:datetime`, `:set`
 
-Setting the primary key using the method `primary_key(pk_name | Array)`:
+#### Primary Key
+
+Set the primary key using the method `primary_key(pk_name | Array)`:
 
 ```ruby
 class User < Cassandro::Model
@@ -42,7 +50,9 @@ end
 
 ```
 
-Setting unique field using the method `unique(field | Array)`:
+#### Unique
+
+Set unique fields using the method `unique(field | Array)`:
 
 ```ruby
 class  User < Cassandro::Model
@@ -51,7 +61,17 @@ class  User < Cassandro::Model
 end
 ```
 
-__A complete example__
+#### Index
+
+Set indexes using the method `index(field | Array)`. Note registering indexes in your model is only a refence.
+
+```ruby
+class  User < Cassandro::Model
+
+  index :age
+end
+
+#### A complete example
 
 ```ruby
 class User < Cassandro::Model
@@ -66,6 +86,7 @@ class User < Cassandro::Model
   primary_key [:email, :created_at]
 
   unique :email
+  
+  index :age
 end
 ```
-
