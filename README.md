@@ -14,6 +14,10 @@ Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro us
 ## Documentation
 
 * [Getting Started](docs/getting_started.md)
+* [Migrations](docs/migrations.md)
+* [Modeling](docs/modeling.md)
+* [Querying](docs/querying.md)
+* [Advanced Features](docs/advanced_features.md)
 
 ## TODO
 
