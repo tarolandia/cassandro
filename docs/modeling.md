@@ -70,6 +70,7 @@ class  User < Cassandro::Model
 
   index :age
 end
+```
 
 #### A complete example
 
