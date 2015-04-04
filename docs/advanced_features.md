@@ -20,6 +20,6 @@ end
 Person.create_with_ttl(20, :first_name => "Eddie", :last_name => "Vedder")
 ```
 
-### Soft Delete
 This will create a record in the `people` table with a TTL of `20` seconds. It doesn't matter if the model has a different TTL set, this will override that TTL for _this record only_
 
+### Soft Delete
