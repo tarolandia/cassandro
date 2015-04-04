@@ -1,21 +1,24 @@
-## Basic Cassandro
+# Getting Started with Cassandro ORM
 
-Connecting to Cassandra DB: `Cassandro.connect(Hash options)`. For full list of options visit [Ruby Driver Documentation](http://datastax.github.io/ruby-driver/api/#cluster-class_method)
+## Connection
+
+Connecting to Cassandra DB: `Cassandro.connect(Hash options)`.
 
 ```ruby
-Cassandro.connect(
-                  hosts: ['127.0.0.1'],
-                  keyspace: 'some_keyspace'
-                 )
+# Connect
+Cassandro.connect(hosts: ['192.168.2.100', '192.168.2.101'])
+
+# Connect specifying keyspace
+Cassandro.connect(hosts: ['192.168.2.100', '192.168.2.101'], keyspace: 'some_keyspace')
 ```
 
-Creating a new keyspace. For full details of keyspace creation visit [CLI keyspace](http://www.datastax.com/documentation/cassandra/2.0/cassandra/reference/referenceStorage_r.html)
+_For full list of options visit [Ruby Driver Documentation](http://datastax.github.io/ruby-driver/api/#cluster-class_method)_
+
+## Keyspace
+
+### Create Keyspace
 
 ```ruby
-# < 1.0.0
-Cassandro.create_keyspace('new_keyspace', 'SimpleStrategy', 1)
-
-# >= 1.0.0, allow more options
 Cassandro.create_keyspace('new_keyspace', {
   replication: {
     class: 'NetworkTopologyStrategy',
@@ -26,13 +29,22 @@ Cassandro.create_keyspace('new_keyspace', {
 })
 ```
 
-Select keyspace outside `#connect`
+_For full details of keyspace creation visit [CLI keyspace](http://www.datastax.com/documentation/cassandra/2.0/cassandra/reference/referenceStorage_r.html)_
+
+
+### Select keyspace
 
 ```ruby
 Cassandro.use('keyspace_name')
 ```
 
-Create table.
+## Execute
+
+### Execute queries.
+```ruby
+result = Cassandro.execute("SELECT * FROM table_name;")
+```
+### Create table.
 ```ruby
 table = <<-TABLEDEF                                                              
   CREATE TABLE IF NOT EXISTS users (                                              
@@ -47,12 +59,11 @@ TABLEDEF
 Cassandro.execute(table)
 ```
 
-Execute queries.
-```ruby
-result = Cassandro.execute("SELECT * FROM table_name;")
-```
+## Cassandra Client
 
-Using Driver directly.
+Cassandro provides access to `cassandra-driver` instance through `Cassandro.client`
+
+### Using Driver directly.
 ```ruby
 statement = Cassandro.client.prepare("SELECT * FROM table_name WHERE colname = ?;")
 result = Cassandro.client.execute(statement, id)
