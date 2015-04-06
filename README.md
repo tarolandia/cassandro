@@ -6,10 +6,18 @@ Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro us
  
 `gem install cassandro`
 
-## Changelog: v2.0
+## Changelog
 
+### v2.0
 * Support `cassandra-driver` >= 2.0
 * Allow registering indexes in model's definition
+
+### v1.2
+* TTL
+ * Model-wide TTL
+ * Single record TTL
+* Support `:set` datatype
+* Ignore columns not definied on model
 
 ## Documentation
 
