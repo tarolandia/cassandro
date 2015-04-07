@@ -20,6 +20,26 @@ Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro us
 * Support `:set` datatype
 * Ignore columns not definied on model
 
+## Example
+
+```ruby
+class Developer < Cassandro::Model
+  table :developers
+  
+  attribute :email, :text
+  attribute :repos, :integer
+  attribute :nickname, :text
+  
+  primary_key [:id, :repos]
+  
+  index :nickname
+end
+
+Cassandro.connect(hosts: ['127.0.0.1'], keyspace: 'little_cassandro')
+
+Developer.create(email: 'developer@dev.com', repos: 10, nickname: 'cassandro')
+```
+
 ## Documentation
 
 * [Getting Started](docs/getting_started.md)
