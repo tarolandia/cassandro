@@ -269,5 +269,11 @@ Protest.describe "Cassandro Model" do
       assert results.first["ttl(address)"] > 0
       assert results.first["ttl(address)"] <= 30
     end
+
+    test "should get TTL" do
+      patient = Patient.create_with_ttl(20, :name => "Cassandro Get", :address => "cassandstreet", :age => 1)
+      assert patient.ttl > 0
+      assert patient.ttl <= 20
+    end
   end
 end

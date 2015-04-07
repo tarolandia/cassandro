@@ -119,11 +119,21 @@ module Cassandro
       Cassandro.execute(query)
     end
 
+    def ttl
+      query = <<-QUERY
+        SELECT TTL(#{@attributes.keys.last}) FROM #{self.class.table_name}
+        WHERE #{self.class.pk.flatten.map { |k| "#{k.to_s} = #{self.class.cast_as(k, @attributes[k])}" }.join(' AND ')}
+      QUERY
+      result = Cassandro.execute(query)
+      result.any? ? result.first.values.first : nil
+    end
+
     def self.table(name)
       self.table_name = name.to_s
     end
 
     def self.attribute(name, type = String, options = {})
+      return if attributes.include?(name)
       attributes << name
       casts[name] = type
 
