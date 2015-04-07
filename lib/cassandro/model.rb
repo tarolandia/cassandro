@@ -138,25 +138,25 @@ module Cassandro
 
     def self.primary_key(keys)
       if keys.is_a?(Array)
-        pk.push(*keys)
+        pk.merge(keys)
       else
-        pk << keys
+        pk.add(keys)
       end
     end
 
     def self.unique(keys)
       if keys.is_a?(Array)
-        uniques.push(*keys)
+        uniques.merge(keys)
       else
-        uniques << keys
+        uniques.add(keys)
       end
     end
 
     def self.index(keys)
       if keys.is_a?(Array)
-        indexes.push(*keys)
+        indexes.merge(keys)
       else
-        indexes << keys
+        indexes.add(keys)
       end
     end
 
@@ -266,7 +266,7 @@ module Cassandro
     end
 
     def self.pk
-      @pk ||= []
+      @pk ||= Set.new
     end
 
     def self.table_name
@@ -282,11 +282,11 @@ module Cassandro
     end
 
     def self.uniques
-      @unique ||= []
+      @unique ||= Set.new
     end
 
     def self.indexes
-      @indexes ||= []
+      @indexes ||= Set.new
     end
 
     def self.uniqueness_defined?
