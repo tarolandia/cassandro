@@ -40,11 +40,11 @@ Cassandro.use('keyspace_name')
 
 ## Execute
 
-### Execute queries.
+### Execute queries
 ```ruby
 result = Cassandro.execute("SELECT * FROM table_name;")
 ```
-### Create table.
+### Create table
 ```ruby
 table = <<-TABLEDEF                                                              
   CREATE TABLE IF NOT EXISTS users (                                              
@@ -63,7 +63,7 @@ Cassandro.execute(table)
 
 Cassandro provides access to `cassandra-driver` instance through `Cassandro.client`
 
-### Using Driver directly.
+### Using Driver directly
 ```ruby
 statement = Cassandro.client.prepare("SELECT * FROM table_name WHERE colname = ?;")
 result = Cassandro.client.execute(statement, id)
