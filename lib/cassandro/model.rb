@@ -265,9 +265,18 @@ module Cassandro
     end
 
     def self.query(where, *values)
+      results = []
+
       query = "SELECT * FROM #{table_name} WHERE #{where} ALLOW FILTERING"
       st = Cassandro.client.prepare(query)
-      Cassandro.client.execute(st, arguments: [values])
+      rows = Cassandro.client.execute(st, arguments: values)
+
+
+      rows.each do |result|
+        results << new(result, true)
+      end
+
+      results
     end
 
     protected
