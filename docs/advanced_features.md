@@ -38,7 +38,7 @@ person.ttl # => 20
 person.ttl # => 18
 ```
 
-### Enabling Soft Delete
+## Enabling Soft Delete
 
 
 ```Ruby
