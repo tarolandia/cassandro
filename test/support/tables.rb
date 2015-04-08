@@ -43,3 +43,5 @@ table = <<-TABLEDEF
   )
 TABLEDEF
 SESSION.execute(table)
+SESSION.execute("CREATE INDEX ON admins (deleted)")
+

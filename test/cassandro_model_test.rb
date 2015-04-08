@@ -176,6 +176,12 @@ Protest.describe "Cassandro Model" do
       assert_equal 1, Test.count(:test_col_1, Cassandra::Uuid.new(uuid))
     end
 
+    test "counts the rows with boolean filter" do
+      Admin.create(nickname: "Count Admin 1", deleted: true)
+      Admin.create(nickname: "Count Admin 2", deleted: false)
+      assert_equal 1, Admin.count(:deleted, false)
+    end
+
     test "ignore columns not defined in model" do
       uuid = SecureRandom.uuid
       Test.create(test_col_1: uuid, test_col_2: 'test_value_2')

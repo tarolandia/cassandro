@@ -242,7 +242,7 @@ module Cassandro
     def self.count(key = nil, value = nil)
       query = "SELECT count(*) FROM #{table_name}"
 
-      if key && value
+      if key && !value.nil?
         key = key.to_sym
         query << " WHERE #{key} = ? ALLOW FILTERING"
         st = Cassandro.client.prepare(query)
