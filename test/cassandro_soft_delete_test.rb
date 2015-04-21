@@ -64,7 +64,6 @@ Protest.describe "Cassandro Model Soft Delete" do
     me.destroy
 
     assert_equal 1, Admin.count
-    assert_equal 0, Admin.count(:nickname, "tarolandia")
   end
 
   test "#count should include deleted if asked" do
@@ -74,6 +73,23 @@ Protest.describe "Cassandro Model Soft Delete" do
     me.destroy
 
     assert_equal 2, Admin.count(true)
+  end
+
+  test "#count should filter by key and exclude deleted" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
+    assert_equal 0, Admin.count(:nickname, "tarolandia")
+  end
+
+  test "#count should filter by key including deleted" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
     assert_equal 1, Admin.count(:nickname, "tarolandia", true)
   end
 
