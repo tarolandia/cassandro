@@ -8,6 +8,36 @@ module Cassandro
 
         results
       end
+
+      def where(key, value, with_deleted = false)
+        results = super(key, value)
+
+        results.reject!{ |r| r.deleted } unless with_deleted
+
+        results
+      end
+
+      def count(key = nil, value = nil, with_deleted = false)
+        return super(key, value) if with_deleted || key === true
+
+        if key && !value.nil?
+          results = where(key, value)
+        else
+          results = all
+        end
+
+        results.size
+      end
+
+      def query(where, *values)
+        with_deleted = where.scan(/\?/).length < values.length && values.pop === true
+
+        results = super(where, *values)
+
+        results.reject!{ |r| r.deleted } unless with_deleted
+
+        results
+      end
     end
 
     def self.included(model)
