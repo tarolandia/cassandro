@@ -21,7 +21,6 @@ Protest.describe "Cassandro Model Soft Delete" do
   end
 
   test "all not include deleted" do
-
     me = Admin.create(:nickname => "k4nd4lf")
     other = Admin.create(:nickname => "Jim")
 
@@ -38,6 +37,62 @@ Protest.describe "Cassandro Model Soft Delete" do
 
     assert !Admin.all.include?(me)
 
+  end
+
+  test "#where not includes deleted" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
+    assert_equal 0, Admin.where(:nickname, "tarolandia").size
+  end
+
+  test "#where should include deleted if asked" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
+    assert_equal 1, Admin.where(:nickname, "tarolandia", true).size
+  end
+
+  test "#count not includes deleted" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
+    assert_equal 1, Admin.count
+    assert_equal 0, Admin.count(:nickname, "tarolandia")
+  end
+
+  test "#count should include deleted if asked" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
+    assert_equal 2, Admin.count(true)
+    assert_equal 1, Admin.count(:nickname, "tarolandia", true)
+  end
+
+  test "#query not includes deleted" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
+    assert_equal 0, Admin.query("nickname = ?", "tarolandia").size
+  end
+
+  test "#query should include deleted if asked" do
+    me = Admin.create(:nickname => "tarolandia")
+    other = Admin.create(:nickname => "Jim")
+
+    me.destroy
+
+    assert_equal 1, Admin.query("nickname = ?", "tarolandia", true).size
   end
 end
 
