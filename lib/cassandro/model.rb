@@ -49,6 +49,8 @@ module Cassandro
     end
 
     def update_attributes(attrs = {})
+      Cassandro.check_connection!
+
       attrs = attrs.inject({}) do |memo, (k,v)|
         memo[k.to_sym] = (v.nil? || v.to_s.empty?) ? nil : v #TODO: fix for Set, Map
         memo
@@ -80,6 +82,8 @@ module Cassandro
     end
 
     def save(insert_check = false)
+      Cassandro.check_connection!
+
       clear_errors
 
       if self.class.casts[:id] == :uuid
@@ -171,6 +175,8 @@ module Cassandro
     end
 
     def self.[](value)
+      Cassandro.check_connection!
+
       return nil if value.nil? || (value.respond_to?(:empty?) && value.empty?)
 
       if value.is_a?(Hash)
@@ -224,6 +230,8 @@ module Cassandro
     end
 
     def self.where(key, value)
+      Cassandro.check_connection!
+
       key = key.to_sym
       results = []
 
@@ -240,6 +248,8 @@ module Cassandro
     end
 
     def self.count(key = nil, value = nil)
+      Cassandro.check_connection!
+
       query = "SELECT count(*) FROM #{table_name}"
 
       if key && !value.nil?
@@ -265,6 +275,8 @@ module Cassandro
     end
 
     def self.query(where, *values)
+      Cassandro.check_connection!
+
       results = []
 
       query = "SELECT * FROM #{table_name} WHERE #{where} ALLOW FILTERING"

@@ -32,7 +32,16 @@ module Cassandro
     @@session = nil
   end
 
+  def self.connected?
+    !@@session.nil?
+  end
+
+  def self.check_connection!
+    raise Cassandra::Errors::ClientError.new("Database connection is not stablished") unless connected?
+  end
+
   def self.execute(cql_command)
+    check_connection!
     @@session.execute(cql_command)
   end
 
@@ -51,11 +60,11 @@ module Cassandro
       #{with}
     KSDEF
 
-    @@session.execute(keyspace_definition)
+    execute(keyspace_definition)
   end
 
   def self.truncate_table(table_name)
-    @@session.execute("TRUNCATE #{table_name}")
+    execute("TRUNCATE #{table_name}")
   end
 
   def self.register_table(table_def)
@@ -63,10 +72,11 @@ module Cassandro
   end
 
   def self.load_tables
+    check_connection!
     @@tables.each do |table_definition|
       queries = table_definition.split(";").map(&:strip)
       queries.each do |query|
-        @@session.execute(query) unless query.empty?
+        execute(query) unless query.empty?
       end
     end
   end

@@ -3,6 +3,7 @@ require_relative 'helper'
 Protest.describe "Cassandro Module" do
   setup do
     SESSION.execute("DROP KEYSPACE IF EXISTS test_keyspace")
+    Cassandro.disconnect
   end
 
   test "connects to database" do
@@ -14,6 +15,12 @@ Protest.describe "Cassandro Module" do
     Cassandro.connect(hosts: ["127.0.0.1"])
     assert_equal Cassandra::Results::Void, Cassandro.create_keyspace("test_keyspace").class
     assert_equal Cassandra::Results::Void, Cassandro.use("test_keyspace").class
+  end
+
+  test "raise error if not connected" do
+    assert_raise(Cassandra::Errors::ClientError) do
+      Cassandro.execute("USE test_keyspace")
+    end
   end
 end
 
