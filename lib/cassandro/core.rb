@@ -40,9 +40,14 @@ module Cassandro
     raise Cassandra::Errors::ClientError.new("Database connection is not stablished") unless connected?
   end
 
-  def self.execute(cql_command)
+  def self.execute(statement, options = nil)
     check_connection!
-    @@session.execute(cql_command)
+    @@session.execute(statement, options)
+  end
+
+  def self.prepare(statement, options = nil)
+    check_connection!
+    @@session.prepare(statement, options)
   end
 
   def self.create_keyspace(name, options = { replication: { class: 'SimpleStrategy', replication_factor: 1}} )
