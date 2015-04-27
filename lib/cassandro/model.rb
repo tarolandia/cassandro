@@ -49,8 +49,6 @@ module Cassandro
     end
 
     def update_attributes(attrs = {})
-      Cassandro.check_connection!
-
       attrs = attrs.inject({}) do |memo, (k,v)|
         memo[k.to_sym] = (v.nil? || v.to_s.empty?) ? nil : v #TODO: fix for Set, Map
         memo
@@ -71,8 +69,8 @@ module Cassandro
       query += "WHERE #{p_keys.join(" AND ")}"
 
       begin
-        st = Cassandro.client.prepare(query)
-        Cassandro.client.execute(st, arguments: native_attributes(attrs))
+        st = Cassandro.prepare(query)
+        Cassandro.execute(st, arguments: native_attributes(attrs))
         @attributes.merge!(attrs)
         true
       rescue Exception => e
@@ -82,8 +80,6 @@ module Cassandro
     end
 
     def save(insert_check = false)
-      Cassandro.check_connection!
-
       clear_errors
 
       if self.class.casts[:id] == :uuid
@@ -105,7 +101,7 @@ module Cassandro
       st = self.statement_for(:insert, :insert_check => insert_check)
 
       begin
-        r = Cassandro.client.execute(st, arguments: self.native_attributes)
+        r = Cassandro.execute(st, arguments: self.native_attributes)
         raise ModelException.new('not_applied') unless !insert_check || (insert_check && r.first["[applied]"])
         @persisted = true
       rescue => e
@@ -175,8 +171,6 @@ module Cassandro
     end
 
     def self.[](value)
-      Cassandro.check_connection!
-
       return nil if value.nil? || (value.respond_to?(:empty?) && value.empty?)
 
       if value.is_a?(Hash)
@@ -193,8 +187,8 @@ module Cassandro
         WHERE #{where}
       QUERY
 
-      st = Cassandro.client.prepare(query)
-      result = Cassandro.client.execute(st, arguments: values)
+      st = Cassandro.prepare(query)
+      result = Cassandro.execute(st, arguments: values)
 
       return nil unless result.any?
 
@@ -230,15 +224,13 @@ module Cassandro
     end
 
     def self.where(key, value)
-      Cassandro.check_connection!
-
       key = key.to_sym
       results = []
 
       query = "SELECT * FROM #{table_name} WHERE #{key} = ? ALLOW FILTERING"
 
-      st = Cassandro.client.prepare(query)
-      rows = Cassandro.client.execute(st, arguments: [value])
+      st = Cassandro.prepare(query)
+      rows = Cassandro.execute(st, arguments: [value])
 
       rows.each do |result|
         results << new(result, true)
@@ -248,17 +240,15 @@ module Cassandro
     end
 
     def self.count(key = nil, value = nil)
-      Cassandro.check_connection!
-
       query = "SELECT count(*) FROM #{table_name}"
 
       if key && !value.nil?
         key = key.to_sym
         query << " WHERE #{key} = ? ALLOW FILTERING"
-        st = Cassandro.client.prepare(query)
-        results = Cassandro.client.execute(st, arguments: [value])
+        st = Cassandro.prepare(query)
+        results = Cassandro.execute(st, arguments: [value])
       else
-        results = Cassandro.client.execute(query)
+        results = Cassandro.execute(query)
       end
 
       results.first["count"]
@@ -275,13 +265,11 @@ module Cassandro
     end
 
     def self.query(where, *values)
-      Cassandro.check_connection!
-
       results = []
 
       query = "SELECT * FROM #{table_name} WHERE #{where} ALLOW FILTERING"
-      st = Cassandro.client.prepare(query)
-      rows = Cassandro.client.execute(st, arguments: values)
+      st = Cassandro.prepare(query)
+      rows = Cassandro.execute(st, arguments: values)
 
 
       rows.each do |result|
@@ -363,7 +351,7 @@ module Cassandro
         QUERY
         if @insert_statement.nil? ||
                       @insert_statement.params_metadata.count != @attributes.count
-          @insert_statement = Cassandro.client.prepare(query)
+          @insert_statement = Cassandro.prepare(query)
         else
           @insert_statement
         end
