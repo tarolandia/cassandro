@@ -24,7 +24,7 @@ module Cassandro
   end
 
   def self.use(keyspace)
-    @@session.execute("USE #{keyspace}") if @@session
+    execute("USE #{keyspace}")
   end
 
   def self.disconnect

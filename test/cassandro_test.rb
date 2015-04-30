@@ -16,11 +16,4 @@ Protest.describe "Cassandro Module" do
     assert_equal Cassandra::Results::Void, Cassandro.create_keyspace("test_keyspace").class
     assert_equal Cassandra::Results::Void, Cassandro.use("test_keyspace").class
   end
-
-  test "raise error if not connected" do
-    assert_raise(Cassandra::Errors::ClientError) do
-      Cassandro.execute("USE test_keyspace")
-    end
-  end
 end
-

@@ -73,7 +73,8 @@ module Cassandro
         Cassandro.execute(st, arguments: native_attributes(attrs))
         @attributes.merge!(attrs)
         true
-      rescue Exception => e
+      rescue => e
+        raise unless Cassandro.connected?
         @errors[:update_error] = e.message
         false
       end
@@ -105,6 +106,7 @@ module Cassandro
         raise ModelException.new('not_applied') unless !insert_check || (insert_check && r.first["[applied]"])
         @persisted = true
       rescue => e
+        raise unless Cassandro.connected?
         @attributes[:id] = nil if !persisted? && @attributes.has_key?(:id)
         @errors[:save] = e.message
         false
@@ -259,7 +261,8 @@ module Cassandro
         query = "TRUNCATE #{table_name}"
         st = Cassandro.execute(query)
         st.is_a? Cassandra::Client::VoidResult
-      rescue e
+      rescue => e
+        raise unless Cassandro.connected?
         false
       end
     end
