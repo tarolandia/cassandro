@@ -8,6 +8,10 @@ Cassandro is a small Ruby ORM for Apache Cassandra 2.0 and CQL 3.0. Cassandro us
 
 ## Changelog
 
+### v2.1.0
+* Raise `Cassandra::Errors::ClientError` exception when trying to interact with Cassandra without a connection
+* SoftDelete Update: refactor `where`, `count` and `query` methods to exclude deleted records by default.
+
 ### v2.0.1
 * Fix `Model#count` for boolean fields
 
