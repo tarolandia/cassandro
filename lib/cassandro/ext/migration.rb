@@ -7,7 +7,7 @@ module Cassandro
     def down; end
 
     def execute(query)
-      Cassandro.client.execute(query)
+      Cassandro.execute(query)
     end
 
     def self.version(version_number)

@@ -3,6 +3,7 @@ require_relative 'helper'
 Protest.describe "Cassandro Module" do
   setup do
     SESSION.execute("DROP KEYSPACE IF EXISTS test_keyspace")
+    Cassandro.disconnect
   end
 
   test "connects to database" do
@@ -16,4 +17,3 @@ Protest.describe "Cassandro Module" do
     assert_equal Cassandra::Results::Void, Cassandro.use("test_keyspace").class
   end
 end
-

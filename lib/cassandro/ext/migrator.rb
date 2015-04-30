@@ -8,7 +8,7 @@ module Cassandro
       @migrations = Cassandro::Migration.migrations
       @logger = logger
 
-      Cassandro.client.execute CassandroMigration.schema
+      Cassandro.execute CassandroMigration.schema
 
       version = CassandroMigration[name: 'version'] || CassandroMigration.create(name: 'version', value: "0")
 

@@ -24,7 +24,7 @@ module Cassandro
   end
 
   def self.use(keyspace)
-    @@session.execute("USE #{keyspace}") if @@session
+    execute("USE #{keyspace}")
   end
 
   def self.disconnect
@@ -32,8 +32,22 @@ module Cassandro
     @@session = nil
   end
 
-  def self.execute(cql_command)
-    @@session.execute(cql_command)
+  def self.connected?
+    !@@session.nil?
+  end
+
+  def self.check_connection!
+    raise Cassandra::Errors::ClientError.new("Database connection is not stablished") unless connected?
+  end
+
+  def self.execute(statement, options = nil)
+    check_connection!
+    @@session.execute(statement, options)
+  end
+
+  def self.prepare(statement, options = nil)
+    check_connection!
+    @@session.prepare(statement, options)
   end
 
   def self.create_keyspace(name, options = { replication: { class: 'SimpleStrategy', replication_factor: 1}} )
@@ -51,11 +65,11 @@ module Cassandro
       #{with}
     KSDEF
 
-    @@session.execute(keyspace_definition)
+    execute(keyspace_definition)
   end
 
   def self.truncate_table(table_name)
-    @@session.execute("TRUNCATE #{table_name}")
+    execute("TRUNCATE #{table_name}")
   end
 
   def self.register_table(table_def)
@@ -63,10 +77,11 @@ module Cassandro
   end
 
   def self.load_tables
+    check_connection!
     @@tables.each do |table_definition|
       queries = table_definition.split(";").map(&:strip)
       queries.each do |query|
-        @@session.execute(query) unless query.empty?
+        execute(query) unless query.empty?
       end
     end
   end
