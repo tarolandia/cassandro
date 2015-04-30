@@ -14,6 +14,10 @@ Cassandro.connect(hosts: ['192.168.2.100', '192.168.2.101'], keyspace: 'some_key
 
 _For full list of options visit [Ruby Driver Documentation](http://datastax.github.io/ruby-driver/api/#cluster-class_method)_
 
+## Missing Connection
+
+If the connection is not established, the `Cassandra::Errors::ClientError` will be raised when trying to interact with Cassandro.
+
 ## Keyspace
 
 ### Create Keyspace
@@ -44,6 +48,13 @@ Cassandro.use('keyspace_name')
 ```ruby
 result = Cassandro.execute("SELECT * FROM table_name;")
 ```
+
+### Execute prepared statements
+```ruby
+st = Cassandro.prepare("SELECT * FROM table_name WHERE column1 = ?")
+result = Cassandro.execute(st, arguments: ['value1'])
+```
+
 ### Create table
 ```ruby
 table = <<-TABLEDEF                                                              
