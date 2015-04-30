@@ -51,9 +51,36 @@ end
 
 This will add an attribute `:delete` to your model. Next time you use `Model#destroy` your data will not be deleted from database but marked as deleted. You can then use `Model#restore` to unmark it.
 
-Data marked as deleted is not included within `Model#all` method by default. In order to include deleted records you have to send a boolean parameter to `all`.
+Data marked as deleted is not included within find methods by default. In order to include deleted records you have to send a boolean parameter:
+
+### All
 
 ```ruby
 Person.all # => list all but deleted
 Person.all(true) # => list all, deleted included
+```
+
+### Where
+
+```ruby
+Person.where(:gender, "male") # => list "male" but deleted
+Person.where(:gender, "male", true) # => list "male", deleted included
+```
+
+### Count
+
+```ruby
+Person.count # => count all but deleted
+Person.count(true) # => count all deleted included
+
+# with filter
+Person.count(:gender, "female") # => count all "female" but deleted
+Person.count(:gender, "female", true) # => count all "female" deleted included
+```
+
+### Query
+
+```ruby
+Person.query("gender = ? AND admin = ?", "male", true) # => list "male" "admins" but deleted
+Person.query("gender = ? AND admin = ?", "male", true, true) # => list "male" "admins", deleted included
 ```
