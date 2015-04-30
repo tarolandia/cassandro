@@ -15,25 +15,25 @@ Protest.describe "Cassandro Connection check" do
 
   context "Core" do
     test "raise Exception on #execute" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Cassandro.execute("USE test_keyspace")
       end
     end
 
     test "raise Exception on #use" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Cassandro.use("test_keyspace")
       end
     end
 
     test "raise Exception on #create_keyspace" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Cassandro.create_keyspace("test_keyspace")
       end
     end
 
     test "raise Exception on #truncate_table" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Cassandro.truncate_table("tests")
       end
     end
@@ -41,7 +41,7 @@ Protest.describe "Cassandro Connection check" do
 
   context "Model" do
     test "raise Exception on #create" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin.create(nickname: "tarolandia")
       end
     end
@@ -49,7 +49,7 @@ Protest.describe "Cassandro Connection check" do
     test "raise Exception on #save" do
       admin = Admin.new(nickname: "tarolandia")
 
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         admin.save
       end
     end
@@ -57,37 +57,37 @@ Protest.describe "Cassandro Connection check" do
     test "raise Exception on #update_attributes" do
       admin = Admin.new(nickname: "tarolandia")
 
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         admin.update_attributes(age: 29)
       end
     end
 
     test "raise Exception on #[]" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin[nickname: "tarolandia"]
       end
     end
 
     test "raise Exception on #all" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin.all
       end
     end
 
     test "raise Exception on #where" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin.where(:nickname, "tarolandia")
       end
     end
 
     test "raise Exception on #count" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin.count
       end
     end
 
     test "raise Exception on #query" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin.query("nickname = ?", "tarolandia")
       end
     end
@@ -95,13 +95,13 @@ Protest.describe "Cassandro Connection check" do
     test "raise Exception on #ttl" do
       admin = Admin.new(nickname: "tarolandia")
 
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         admin.ttl
       end
     end
 
     test "raise Exception on #create_with_ttl" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin.create_with_ttl(20, nickname: "tarolandia", age: 29)
       end
     end
@@ -109,13 +109,13 @@ Protest.describe "Cassandro Connection check" do
     test "raise Exception on #destroy" do
       admin = Admin.new(nickname: "tarolandia")
 
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         admin.destroy
       end
     end
 
     test "raise Exception on #destroy_all" do
-      assert_raise(Cassandra::Errors::ClientError, "Database connection is not stablished") do
+      assert_raise(Cassandra::Errors::ClientError, "Database connection is not established") do
         Admin.destroy_all
       end
     end

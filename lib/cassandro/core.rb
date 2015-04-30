@@ -37,7 +37,7 @@ module Cassandro
   end
 
   def self.check_connection!
-    raise Cassandra::Errors::ClientError.new("Database connection is not stablished") unless connected?
+    raise Cassandra::Errors::ClientError.new("Database connection is not established") unless connected?
   end
 
   def self.execute(statement, options = nil)
